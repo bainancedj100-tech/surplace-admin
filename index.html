@@ -47,7 +47,17 @@
             <section id="drivers" class="tab-content active">
                 <div class="header-section">
                     <h1>مراجعة السائقين الجدد</h1>
-                    <p>التحقق من الوثائق بواسطة Supabase Storage وتفعيل الحسابات.</p>
+                    <p>التحقق من الوثائق وتفعيل الحسابات.</p>
+                </div>
+                <!-- Real Stats Card moved to Drivers tab -->
+                <div class="card glass stat-card" style="margin-bottom: 20px; width: fit-content; min-width: 250px;">
+                    <div class="icon-box blue" id="users-icon-box"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3>إجمالي المستخدمين</h3>
+                        <h2 id="total-users">جاري التحميل...</h2>
+                        <div class="progress-bar"><div class="fill bg-blue" id="users-progress" style="width: 0%;"></div></div>
+                        <p class="status-msg text-green" id="users-status">تحديث مباشر</p>
+                    </div>
                 </div>
                 <div class="card glass">
                     <table class="data-table">
@@ -73,6 +83,16 @@
                 <div class="header-section">
                     <h1>شحن المحفظة (الرصيد)</h1>
                     <p>إدارة أرصدة السائقين عبر PostgreSQL Transactions.</p>
+                </div>
+                <!-- Real Stats Card moved to Wallet tab -->
+                <div class="card glass stat-card" style="margin-bottom: 20px; width: fit-content; min-width: 250px;">
+                    <div class="icon-box green" id="tx-icon-box"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-info">
+                        <h3>إجمالي المعاملات المالية</h3>
+                        <h2 id="total-transactions">جاري التحميل...</h2>
+                        <div class="progress-bar"><div class="fill bg-green" id="tx-progress" style="width: 0%;"></div></div>
+                        <p class="status-msg text-green" id="tx-status">تحديث مباشر</p>
+                    </div>
                 </div>
                 <div class="wallet-grid">
                     <div class="card glass form-card">
@@ -104,22 +124,22 @@
                     <p>Firebase Crashlytics + Supabase DB Connections Monitoring.</p>
                 </div>
                 <div class="health-grid">
-                    <div class="card glass stat-card">
-                        <div class="icon-box blue"><i class="fas fa-users"></i></div>
+                    <div class="card glass stat-card" id="health-card">
+                        <div class="icon-box blue health-icon"><i class="fas fa-network-wired"></i></div>
                         <div class="stat-info">
-                            <h3>إجمالي المستخدمين (السائقين)</h3>
-                            <h2 id="total-users">جاري التحميل...</h2>
-                            <div class="progress-bar"><div class="fill bg-blue" id="users-progress" style="width: 0%;"></div></div>
-                            <p class="status-msg text-green" id="users-status">تحديث مباشر</p>
+                            <h3>حالة اتصال قاعدة البيانات</h3>
+                            <h2 id="db-latency-value">جاري الفحص...</h2>
+                            <div class="progress-bar"><div class="fill bg-blue" id="health-progress" style="width: 50%;"></div></div>
+                            <p class="status-msg text-green health-status">الرجاء الانتظار</p>
                         </div>
                     </div>
                     <div class="card glass stat-card">
-                        <div class="icon-box green"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="icon-box red"><i class="fas fa-bug"></i></div>
                         <div class="stat-info">
-                            <h3>إجمالي المعاملات المالية</h3>
-                            <h2 id="total-transactions">جاري التحميل...</h2>
-                            <div class="progress-bar"><div class="fill bg-green" id="tx-progress" style="width: 0%;"></div></div>
-                            <p class="status-msg text-green" id="tx-status">تحديث مباشر</p>
+                            <h3>أخطاء السيرفر (اليوم)</h3>
+                            <h2 id="server-errors">0 <small>أخطاء</small></h2>
+                            <div class="progress-bar"><div class="fill bg-green" style="width: 100%;"></div></div>
+                            <p class="status-msg text-green">النظام مستقر تماماً</p>
                         </div>
                     </div>
                 </div>

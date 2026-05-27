@@ -187,14 +187,17 @@ async function checkHealth() {
     try {
         await supabase.from('users').select('uid').limit(1);
         const latency = Math.round(performance.now() - start);
-        document.querySelector('.icon-box.blue').classList.remove('red');
-        document.querySelector('.icon-box.blue i').className = 'fas fa-server';
-        document.querySelector('.stat-info .text-green').innerText = `متصل! (${latency}ms استجابة)`;
+        document.querySelector('.health-icon').classList.remove('red');
+        document.querySelector('.health-icon i').className = 'fas fa-server';
+        document.getElementById('db-latency-value').innerText = latency + 'ms';
+        document.querySelector('.health-status').innerText = `متصل!`;
+        document.querySelector('.health-status').classList.remove('text-red');
     } catch (e) {
-        document.querySelector('.icon-box.blue').classList.replace('blue', 'red');
-        document.querySelector('.icon-box.blue i').className = 'fas fa-plug-circle-xmark';
-        document.querySelector('.stat-info .text-green').innerText = `انقطع الاتصال بالقاعدة!`;
-        document.querySelector('.stat-info .text-green').classList.replace('text-green', 'text-red');
+        document.querySelector('.health-icon').classList.replace('blue', 'red');
+        document.querySelector('.health-icon i').className = 'fas fa-plug-circle-xmark';
+        document.getElementById('db-latency-value').innerText = "فشل";
+        document.querySelector('.health-status').innerText = `انقطع الاتصال بالقاعدة!`;
+        document.querySelector('.health-status').classList.add('text-red');
     }
 }
 
