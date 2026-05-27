@@ -19,6 +19,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
 async function loadRealData() {
     await fetchDrivers();
     await fetchTransactions();
+    // Health is implicitly checked by the data fetches above, but retain checkHealth logic for explicit check
     checkHealth();
 }
 
@@ -31,9 +32,17 @@ async function fetchDrivers() {
         if (error) { throw error; }
         drivers = data || [];
         renderDrivers();
+        
+        // Update Real Stats display
+        document.getElementById('total-users').innerText = drivers.length;
+        document.getElementById('users-progress').style.width = Math.min((drivers.length / 50) * 100, 100) + '%';
+        if(drivers.length > 0) document.getElementById('users-status').innerText = 'تم الجلب من القاعدة';
+        
     } catch (e) {
         console.error("Error fetching drivers:", e);
         showToast("خطأ في جلب بيانات السائقين");
+        document.getElementById('total-users').innerText = "خطأ";
+        document.getElementById('users-progress').style.width = '0%';
     }
 }
 
@@ -91,12 +100,20 @@ let transactions = [];
 
 async function fetchTransactions() {
     try {
-        const { data, error } = await supabase.from('transactions').select('*').order('created_at', { ascending: false }).limit(10);
+        const { data, error } = await supabase.from('transactions').select('*').order('created_at', { ascending: false }).limit(50);
         if (error) { throw error; }
         transactions = data || [];
         renderTransactions();
+        
+        // Update Real Stats display for Transactions
+        document.getElementById('total-transactions').innerText = transactions.length;
+        document.getElementById('tx-progress').style.width = Math.min((transactions.length / 100) * 100, 100) + '%';
+        if(transactions.length > 0) document.getElementById('tx-status').innerText = 'تم الجلب من القاعدة';
+        
     } catch (e) {
         console.error("Error fetching transactions:", e);
+        document.getElementById('total-transactions').innerText = "خطأ";
+        document.getElementById('tx-progress').style.width = '0%';
     }
 }
 

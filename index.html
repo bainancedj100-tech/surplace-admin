@@ -105,21 +105,21 @@
                 </div>
                 <div class="health-grid">
                     <div class="card glass stat-card">
-                        <div class="icon-box blue"><i class="fas fa-network-wired"></i></div>
+                        <div class="icon-box blue"><i class="fas fa-users"></i></div>
                         <div class="stat-info">
-                            <h3>اتصالات قاعدة البيانات (Active)</h3>
-                            <h2>124 <small>/ 500 حد أقصى</small></h2>
-                            <div class="progress-bar"><div class="fill bg-blue" style="width: 25%;"></div></div>
-                            <p class="status-msg text-green">الحالة طبيعية</p>
+                            <h3>إجمالي المستخدمين (السائقين)</h3>
+                            <h2 id="total-users">جاري التحميل...</h2>
+                            <div class="progress-bar"><div class="fill bg-blue" id="users-progress" style="width: 0%;"></div></div>
+                            <p class="status-msg text-green" id="users-status">تحديث مباشر</p>
                         </div>
                     </div>
                     <div class="card glass stat-card">
-                        <div class="icon-box red"><i class="fas fa-bug"></i></div>
+                        <div class="icon-box green"><i class="fas fa-money-bill-wave"></i></div>
                         <div class="stat-info">
-                            <h3>أخطاء السيرفر (أخر 5 دقائق)</h3>
-                            <h2>2 <small>Timeouts</small></h2>
-                            <div class="progress-bar"><div class="fill bg-red" style="width: 2%;"></div></div>
-                            <p class="status-msg text-green">لا بأس، النظام مستقر</p>
+                            <h3>إجمالي المعاملات المالية</h3>
+                            <h2 id="total-transactions">جاري التحميل...</h2>
+                            <div class="progress-bar"><div class="fill bg-green" id="tx-progress" style="width: 0%;"></div></div>
+                            <p class="status-msg text-green" id="tx-status">تحديث مباشر</p>
                         </div>
                     </div>
                 </div>
