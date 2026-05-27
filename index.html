@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surplace Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Surplace<span class="dot">.</span></h2>
+                <p>لوحة التحكم الإدارية</p>
+            </div>
+            <nav class="menu">
+                <a href="#" class="menu-item active" data-tab="drivers"><i class="fas fa-id-card"></i> السائقين</a>
+                <a href="#" class="menu-item" data-tab="wallet"><i class="fas fa-wallet"></i> المحفظة والشحن</a>
+                <a href="#" class="menu-item" data-tab="health"><i class="fas fa-server"></i> حالة النظام</a>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Hybrid DB Architecture</p>
+                <small>Supabase + Firebase</small>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="ابحث عن سائق، معاملة، أو هاتف...">
+                </div>
+                <div class="admin-profile">
+                    <div class="notification-bell"><i class="fas fa-bell"></i><span class="badge">3</span></div>
+                    <div class="profile-info">
+                        <strong>المدير المالي</strong>
+                        <small>صلاحيات كاملة</small>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 1. Drivers Tab -->
+            <section id="drivers" class="tab-content active">
+                <div class="header-section">
+                    <h1>مراجعة السائقين الجدد</h1>
+                    <p>التحقق من الوثائق بواسطة Supabase Storage وتفعيل الحسابات.</p>
+                </div>
+                <div class="card glass">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>معرف السائق</th>
+                                <th>اسم السائق</th>
+                                <th>الوثائق</th>
+                                <th>تاريخ التسجيل</th>
+                                <th>الحالة</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="drivers-list">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 2. Wallet Tab -->
+            <section id="wallet" class="tab-content">
+                <div class="header-section">
+                    <h1>شحن المحفظة (الرصيد)</h1>
+                    <p>إدارة أرصدة السائقين عبر PostgreSQL Transactions.</p>
+                </div>
+                <div class="wallet-grid">
+                    <div class="card glass form-card">
+                        <h3>عملية شحن جديدة</h3>
+                        <div class="input-group">
+                            <label>معرف السائق (Driver ID)</label>
+                            <input type="text" id="driver-wallet-id" placeholder="أدخل الـ ID...">
+                        </div>
+                        <div class="input-group">
+                            <label>المبلغ (دينار جزائري)</label>
+                            <input type="number" id="charge-amount" placeholder="مثال: 2000">
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="chargeWallet()">تأكيد الشحن وإضافة المعاملة</button>
+                    </div>
+                    
+                    <div class="card glass">
+                        <h3>أحدث المعاملات (Live)</h3>
+                        <ul class="transaction-list" id="transaction-list">
+                            <!-- Data injected via JS -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Health Monitoring Tab -->
+            <section id="health" class="tab-content">
+                <div class="header-section">
+                    <h1>مراقبة حالة النظام والأخطاء</h1>
+                    <p>Firebase Crashlytics + Supabase DB Connections Monitoring.</p>
+                </div>
+                <div class="health-grid">
+                    <div class="card glass stat-card">
+                        <div class="icon-box blue"><i class="fas fa-network-wired"></i></div>
+                        <div class="stat-info">
+                            <h3>اتصالات قاعدة البيانات (Active)</h3>
+                            <h2>124 <small>/ 500 حد أقصى</small></h2>
+                            <div class="progress-bar"><div class="fill bg-blue" style="width: 25%;"></div></div>
+                            <p class="status-msg text-green">الحالة طبيعية</p>
+                        </div>
+                    </div>
+                    <div class="card glass stat-card">
+                        <div class="icon-box red"><i class="fas fa-bug"></i></div>
+                        <div class="stat-info">
+                            <h3>أخطاء السيرفر (أخر 5 دقائق)</h3>
+                            <h2>2 <small>Timeouts</small></h2>
+                            <div class="progress-bar"><div class="fill bg-red" style="width: 2%;"></div></div>
+                            <p class="status-msg text-green">لا بأس، النظام مستقر</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card glass webhook-card mt-4">
+                    <h3>محاكاة الإنذار المبكر (Webhook Telegram/Discord)</h3>
+                    <p>في حالة ارتفاع الضغط فوق المعدل، يتم رصد ذلك عبر Edge Functions وإرسال تنبيه حرِج. جرب إرسال اختبار الآن:</p>
+                    <button class="btn btn-danger mt-3" onclick="triggerSimulatedAlert()">
+                        <i class="fas fa-radiation"></i> إرسال تنبيه محاكاة للهاتف
+                    </button>
+                    <div id="alert-response" class="hidden mt-3"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
