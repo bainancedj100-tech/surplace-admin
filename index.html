@@ -159,6 +159,27 @@
     <!-- Alert Modal -->
     <div id="toast" class="toast hidden"></div>
 
+    <!-- Document View Modal -->
+    <div id="docs-modal" class="modal hidden">
+        <div class="modal-content glass">
+            <span class="close-btn" onclick="closeDocs()">&times;</span>
+            <h2 style="margin-bottom: 24px; color: var(--primary);">مستندات السائق للمراجعة</h2>
+            <div class="docs-images">
+                <div class="doc-card">
+                    <h4>صورة الهوية الوطنية</h4>
+                    <img id="doc-id-img" src="" alt="ID Image">
+                </div>
+                <div class="doc-card">
+                    <h4>صورة رخصة السياقة</h4>
+                    <img id="doc-license-img" src="" alt="License Image">
+                </div>
+            </div>
+            <div id="docs-action" style="margin-top:24px;text-align:center;">
+               <!-- action buttons --!>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 </body>

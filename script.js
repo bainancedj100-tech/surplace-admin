@@ -100,8 +100,48 @@ window.approveDriver = async function(uid) {
     }
 }
 
+let currentViewUid = null;
 window.viewDocs = function(uid) {
-    showToast("سيتم جلب المستندات من bucket 'driver_docs' لهذا الحساب");
+    currentViewUid = uid;
+    const doc = drivers.find(d => d.uid === uid);
+    if (!doc) return;
+    
+    // Defaulting to Firebase Storage URLs if exact URLs missing
+    const idUrl = doc.profileImageUrl || `https://firebasestorage.googleapis.com/v0/b/coursa14-project.appspot.com/o/drivers%2F${uid}%2Fid.jpg?alt=media`;
+    const licenseUrl = doc.licenseImageUrl || `https://firebasestorage.googleapis.com/v0/b/coursa14-project.appspot.com/o/drivers%2F${uid}%2Flicense.jpg?alt=media`;
+
+    document.getElementById('doc-id-img').src = idUrl;
+    document.getElementById('doc-license-img').src = licenseUrl;
+    
+    const isApproved = doc.role === 'driver' || doc.status === 'approved';
+    const actionDiv = document.getElementById('docs-action');
+    if (!isApproved) {
+        actionDiv.innerHTML = `
+            <button class="btn btn-success" style="margin-left: 10px;" onclick="approveDriver('${uid}'); closeDocs();"><i class="fas fa-check"></i> قبول كسائق</button>
+            <button class="btn btn-danger" onclick="rejectDriver('${uid}'); closeDocs();"><i class="fas fa-times"></i> رفض الطلب</button>
+        `;
+    } else {
+        actionDiv.innerHTML = `<span class="status-badge status-approved" style="font-size: 16px; padding: 12px 24px;">السائق معتمد ومفعل ✅</span>`;
+    }
+
+    document.getElementById('docs-modal').classList.remove('hidden');
+}
+
+window.closeDocs = function() {
+    document.getElementById('docs-modal').classList.add('hidden');
+    currentViewUid = null;
+}
+
+window.rejectDriver = async function(uid) {
+    if (!confirm('هل أنت متأكد من رفض طلب هذا السائق؟')) return;
+    try {
+        const { error } = await supabaseClient.from('users').update({ status: 'rejected' }).eq('uid', uid);
+        if (error) throw error;
+        showToast('تم رفض السائق بنجاح');
+        fetchDrivers();
+    } catch(e) {
+        showToast("خطأ أثناء الرفض");
+    }
 }
 
 // 2. Live Wallet Logic
