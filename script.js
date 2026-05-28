@@ -1,12 +1,17 @@
+console.log("script.js execution started");
 const supabaseUrl = 'https://gnbtpmsvztnnpfyadxth.supabase.co';
-const supabaseKey = 'sb_publishable_oRKwkHLpn1l0flD1WkLdrQ_NRFBulRP'; // Note: Ensure this is the actual Anon Key
+const supabaseKey = 'sb_publishable_oRKwkHLpn1l0flD1WkLdrQ_NRFBulRP'; 
+console.log("Creating Supabase client...");
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+console.log("Supabase client created.", !!supabase);
 
 // --- Tab Navigation Logic ---
+// --- Tab Navigation Logic ---
+console.log("Attaching menu-item click listeners...");
 document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', (e) => {
         e.preventDefault();
-        
+        console.log("Tab clicked:", item.getAttribute('data-tab'));
         document.querySelectorAll('.menu-item').forEach(nav => nav.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         
@@ -15,11 +20,15 @@ document.querySelectorAll('.menu-item').forEach(item => {
         document.getElementById(targetId).classList.add('active');
     });
 });
+console.log("Listeners attached.");
 
 async function loadRealData() {
+    console.log("loadRealData called");
+    console.log("Calling fetchDrivers...");
     await fetchDrivers();
+    console.log("Calling fetchTransactions...");
     await fetchTransactions();
-    // Health is implicitly checked by the data fetches above, but retain checkHealth logic for explicit check
+    console.log("Calling checkHealth...");
     checkHealth();
 }
 
