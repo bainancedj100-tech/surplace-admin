@@ -2,8 +2,8 @@ console.log("script.js execution started");
 const supabaseUrl = 'https://gnbtpmsvztnnpfyadxth.supabase.co';
 const supabaseKey = 'sb_publishable_oRKwkHLpn1l0flD1WkLdrQ_NRFBulRP'; 
 console.log("Creating Supabase client...");
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-console.log("Supabase client created.", !!supabase);
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+console.log("Supabase client created.", !!supabaseClient);
 
 // --- Tab Navigation Logic ---
 // --- Tab Navigation Logic ---
@@ -37,7 +37,7 @@ let drivers = [];
 
 async function fetchDrivers() {
     try {
-        const { data, error } = await supabase.from('users').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
         if (error) { throw error; }
         drivers = data || [];
         renderDrivers();
@@ -91,7 +91,7 @@ function renderDrivers() {
 
 window.approveDriver = async function(uid) {
     try {
-        const { error } = await supabase.from('users').update({ role: 'driver', status: 'approved' }).eq('uid', uid);
+        const { error } = await supabaseClient.from('users').update({ role: 'driver', status: 'approved' }).eq('uid', uid);
         if (error) throw error;
         showToast(`تم ترقية وتفعيل حساب السائق بنجاح.`);
         fetchDrivers(); // refresh
@@ -109,7 +109,7 @@ let transactions = [];
 
 async function fetchTransactions() {
     try {
-        const { data, error } = await supabase.from('transactions').select('*').order('created_at', { ascending: false }).limit(50);
+        const { data, error } = await supabaseClient.from('transactions').select('*').order('created_at', { ascending: false }).limit(50);
         if (error) { throw error; }
         transactions = data || [];
         renderTransactions();
@@ -141,14 +141,14 @@ window.chargeWallet = async function() {
         btn.disabled = true;
 
         // Add Transaction record
-        const { error: txError } = await supabase.from('transactions').insert([
+        const { error: txError } = await supabaseClient.from('transactions').insert([
             { driver_id: id, amount: amount, admin_name: 'أدمن النظام' }
         ]);
 
         if (txError) throw txError;
         
         // Also update wallets table... Usually done via database RPC function for atomicity!
-        const { error: walletError } = await supabase.from('wallets').upsert({ driver_id: id, balance: amount }); 
+        const { error: walletError } = await supabaseClient.from('wallets').upsert({ driver_id: id, balance: amount }); 
         
         showToast(`تم شحن ${amount} دج لحساب السائق المذكور بنجاح.`);
         document.getElementById('driver-wallet-id').value = '';
@@ -194,7 +194,7 @@ function renderTransactions() {
 async function checkHealth() {
     const start = performance.now();
     try {
-        await supabase.from('users').select('uid').limit(1);
+        await supabaseClient.from('users').select('uid').limit(1);
         const latency = Math.round(performance.now() - start);
         document.querySelector('.health-icon').classList.remove('red');
         document.querySelector('.health-icon i').className = 'fas fa-server';
