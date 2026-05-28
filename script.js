@@ -37,7 +37,7 @@ let drivers = [];
 
 async function fetchDrivers() {
     try {
-        const { data, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('users').select('*');
         if (error) { throw error; }
         drivers = data || [];
         renderDrivers();
@@ -73,11 +73,11 @@ function renderDrivers() {
             
         let statusBadge = !isApproved ? 'status-pending' : 'status-approved';
         let statusText = !isApproved ? 'قيد المراجعة' : 'مفعل';
-        let dateJoined = new Date(doc.created_at || Date.now()).toLocaleDateString('ar-DZ');
+        let dateJoined = doc.created_at ? new Date(doc.created_at).toLocaleDateString('ar-DZ') : 'غير متوفر';
 
         let tr = `
             <tr>
-                <td>${doc.uid.substring(0,8)}...</td>
+                <td>${doc.uid ? doc.uid.substring(0,8) : '...'}</td>
                 <td><strong>${doc.name || 'بدون اسم'}</strong> <br><small>${doc.email || doc.phone || ''}</small></td>
                 <td><a href="#" onclick="viewDocs('${doc.uid}')" style="color:var(--blue); text-decoration:none;"><i class="fas fa-file-image"></i> المستندات</a></td>
                 <td>${dateJoined}</td>
@@ -149,10 +149,21 @@ let transactions = [];
 
 async function fetchTransactions() {
     try {
-        const { data, error } = await supabaseClient.from('transactions').select('*').order('created_at', { ascending: false }).limit(50);
-        if (error) { throw error; }
+        const { data, error } = await supabaseClient.from('transactions').select('*').limit(50);
+        if (error) { 
+            // Gracefully handle if transactions table doesn't exist yet
+            if (error.code === 'PGRST205' || error.message.includes('find the table')) {
+                transactions = [];
+                document.getElementById('total-transactions').innerText = "0";
+                document.getElementById('tx-status').innerText = 'الجدول غير موجود';
+                document.getElementById('tx-progress').style.width = '0%';
+                renderTransactionsSafe();
+                return;
+            }
+            throw error; 
+        }
         transactions = data || [];
-        renderTransactions();
+        renderTransactionsSafe();
         
         // Update Real Stats display for Transactions
         document.getElementById('total-transactions').innerText = transactions.length;
@@ -202,22 +213,24 @@ window.chargeWallet = async function() {
         console.error(e);
         showToast("حدث خطأ! تأكد من تشغيل سكريبت SQL لضمان وجود جداول transactions و wallets.");
         const btn = document.querySelector('.form-card .btn');
-        btn.innerText = "تأكيد الشحن وإضافة المعاملة";
-        btn.disabled = false;
+        if(btn) {
+            btn.innerText = "تأكيد الشحن وإضافة المعاملة";
+            btn.disabled = false;
+        }
     }
 }
 
-function renderTransactions() {
+function renderTransactionsSafe() {
     const list = document.getElementById('transaction-list');
     list.innerHTML = '';
     
     if(transactions.length === 0) {
-        list.innerHTML = `<li style="color:var(--text-dim); justify-content:center;">لا توجد معاملات حديثة</li>`;
+        list.innerHTML = `<li style="color:var(--text-dim); justify-content:center;">لا توجد معاملات حديثة (أو الجدول غير موجود)</li>`;
         return;
     }
 
     transactions.forEach(tx => {
-        let timeDate = new Date(tx.created_at).toLocaleString('ar-DZ');
+        let timeDate = tx.created_at ? new Date(tx.created_at).toLocaleString('ar-DZ') : 'غير متوفر';
         list.innerHTML += `
             <li>
                 <div class="tx-info">
